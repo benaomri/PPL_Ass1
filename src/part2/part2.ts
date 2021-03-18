@@ -7,10 +7,8 @@ const stringToArray = R.split("");
 export const countVowels=R.pipe(
     (str:string) =>stringToArray(str),
     (array:string[])=>array.filter((t)=>{
-       if('aeiouAEIOU'.includes(t)) return  true;
-       return false;}),
-    (array :string[])=>array.length
-) 
+        return 'aeiouAEIOU'.includes(t)}),
+    (array :string[])=>array.length) 
 
 
 
