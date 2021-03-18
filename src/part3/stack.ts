@@ -22,4 +22,3 @@ export const stackManip =(s:Stack) :[Stack,undefined]=> {
     return afterpush2;
 }
 
-console.log(stackManip([30, 10, 5]))
