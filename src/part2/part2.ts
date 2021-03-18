@@ -15,8 +15,8 @@ export const countVowels: (str:string) =>number = (str) => {
 
 /* Question 2 */
 export const runLengthEncoding: (str:string) => string = (str) => {
-    let string = stringToArray(str),
-      counter = 1,
+    const string = stringToArray(str),
+      counter = [1],
       compString = string.reduce(function (
         accumulator,
         currentValue,
@@ -26,12 +26,14 @@ export const runLengthEncoding: (str:string) => string = (str) => {
 
         if (currentValue === array[currentIndex + 1]) {
           //increment and move on
-          counter++;
+          counter[0]++;
+        //   counter=counter+1;
           return accumulator;
         } else {
           //save letter and number
           accumulator += (currentValue + counter);
-          counter = 1;
+          counter[0]=1;
+        //   counter = 1;
           return accumulator;
         }
 
