@@ -43,8 +43,33 @@ export const runLengthEncoding: (str:string) => string = (str) => {
 
 /* Question 3 */
 export const isPaired:(str:string) =>boolean = (str)=>{
-    return true;
+    //filter to stay with array with only parenthesis
+    const soger=stringToArray(str).filter((t:string) => {if ('(){}[]'.includes(t)) return true; });
+    if(soger.length %2 !==0)//check if is odd number of  parenthesis 
+        return false;
+    if((soger[0]===')')||(soger[0]==='}')||(soger[0]===']'))//check if the firsr parenthes is a closser
+        return false;
 
-};
+    
+    return !soger.reduce((uptoPrevChar, thisChar,currentIndex) => {
+        
+        if(thisChar === '(' || thisChar === '{' || thisChar === '[' ) {
+            return ++uptoPrevChar;
+        }
+           //check that the condition is mathematical right, if not ptoPrevChar=Number.MIN_SAFE_INTEGER
+             if ((thisChar === ')')&&(soger[currentIndex-1] ==='{'||soger[currentIndex-1] ==='[') ||
+                  (thisChar === '}')&&(soger[currentIndex-1] ==='('||soger[currentIndex-1] ==='[') ||
+                  (thisChar === ']')&&(soger[currentIndex-1] ==='{'||soger[currentIndex-1] ==='(') ){
+                      
+                    return uptoPrevChar=Number.MIN_SAFE_INTEGER;
+                  }
+        else{
+           
+              return --uptoPrevChar;
+        }
+    }, 0);
+}
+
 console.log(countVowels("hello"))
 console.log(runLengthEncoding("AAaaaabbbccc"))
+console.log(isPaired("((abc))()[]{]"))
