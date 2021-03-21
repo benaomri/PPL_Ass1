@@ -1,4 +1,4 @@
-import { Result, makeFailure, makeOk, bind, either } from "../lib/result";
+import { Result, makeFailure, makeOk, bind, either,isOk } from "../lib/result";
 
 /* Library code */
 const findOrThrow = <T>(pred: (x: T) => boolean, a: T[]): T => {
@@ -8,7 +8,16 @@ const findOrThrow = <T>(pred: (x: T) => boolean, a: T[]): T => {
     throw "No element found.";
 }
 
-export const findResult = undefined;
+export const findResult =<T>(pred: (x: T) => boolean, a: T[]):Result<T> =>{
+    try{
+        const ans =findOrThrow(pred,a);
+        return makeOk(ans);
+    }
+    catch (e){
+        return makeFailure(e)
+
+    }
+}
 
 /* Client code */
 const returnSquaredIfFoundEven_v1 = (a: number[]): number => {
@@ -20,6 +29,18 @@ const returnSquaredIfFoundEven_v1 = (a: number[]): number => {
     }
 }
 
-export const returnSquaredIfFoundEven_v2 = undefined;
-
-export const returnSquaredIfFoundEven_v3 = undefined;
+export const returnSquaredIfFoundEven_v2 = (a: number[]): Result<number>=> {
+    const res=(findResult(((x:number) => {return x%2==0}),a))
+    return bind(res,(x:number)=>{ return makeOk(x*x)})
+  
+  }
+  
+  export const returnSquaredIfFoundEven_v3 = (a: number[]): number|any => {
+  
+      const findResultNum = findResult((x:number) => {return x%2==0}, a)
+      return either(findResultNum,() =>
+      { if (isOk(findResultNum)) return findResultNum.value*findResultNum.value },()=>-1)
+  
+  
+  
+  }
