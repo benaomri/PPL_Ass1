@@ -2,47 +2,54 @@ import * as R from "ramda";
 
 const stringToArray = R.split("");
 
+
 /* Question 1 */
-export const countVowels: (str:string) =>number = (str) => {
-  
-    const len= (stringToArray(str).filter((t:string) => 
-            {if ('aeiou'.includes(t)) return true; })).length;
-            console.log("len",len)
-            if (len)  return len;
-            return 0;
-    
-}
+export const countVowels=R.pipe(
+    (str:string) =>stringToArray(str),
+     R.filter((t:string)=>{
+        return 'aeiouAEIOU'.includes(t)}),
+     R.length); 
+
+
 
 /* Question 2 */
-export const runLengthEncoding: (str:string) => string = (str) => {
-    let string = stringToArray(str),
-      counter = 1,
-      compString = string.reduce(function (
-        accumulator,
-        currentValue,
-        currentIndex,
-        array
-      ) {
+export const runLengthEncoding =R.pipe(
+      (str:string)=>stringToArray(str),
+      R.groupWith(R.equals),
+      R.map((str)=>(str.length>=2) ? [str[0],str.length] : str[0]),
+      R.join(""),
+      (str:string)=>stringToArray(str),
+      R.filter(str=>str!=","),
+      R.join("")
+      );
 
-        if (currentValue === array[currentIndex + 1]) {
-          //increment and move on
-          counter++;
-          return accumulator;
-        } else {
-          //save letter and number
-          accumulator += (currentValue + counter);
-          counter = 1;
-          return accumulator;
-        }
 
-      }, "");
-  return  compString;
-}
 
 /* Question 3 */
 export const isPaired:(str:string) =>boolean = (str)=>{
-    return true;
+  //filter to stay with array with only parenthesis
+  const soger=stringToArray(str).filter((t:string) => {if ('(){}[]'.includes(t)) return true; });
+  if(soger.length %2 !==0)//check if is odd number of  parenthesis 
+      return false;
+  if((soger[0]===')')||(soger[0]==='}')||(soger[0]===']'))//check if the firsr parenthes is a closser
+      return false;
 
-};
-console.log(countVowels("hello"))
-console.log(runLengthEncoding("AAaaaabbbccc"))
+  
+  return !soger.reduce((uptoPrevChar, thisChar,currentIndex) => {
+      
+      if(thisChar === '(' || thisChar === '{' || thisChar === '[' ) {
+          return ++uptoPrevChar;
+      }
+         //check that the condition is mathematical right, if not ptoPrevChar=Number.MIN_SAFE_INTEGER
+           if ((thisChar === ')')&&(soger[currentIndex-1] ==='{'||soger[currentIndex-1] ==='[') ||
+                (thisChar === '}')&&(soger[currentIndex-1] ==='('||soger[currentIndex-1] ==='[') ||
+                (thisChar === ']')&&(soger[currentIndex-1] ==='{'||soger[currentIndex-1] ==='(') ){
+                    
+                  return uptoPrevChar=Number.MIN_SAFE_INTEGER;
+                }
+      else{
+         
+            return --uptoPrevChar;
+      }
+  }, 0);
+}
